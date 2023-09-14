@@ -104,6 +104,28 @@ function App() {
     "💛",
     "💚",
   ];
+
+  const [meetingCode, setMeetingCode] = useState("");
+
+  const startMeeting = (e) => {
+    socket.emit("start-meeting", e.target.value);
+    setMyName(e.target.value);
+    setChats([
+      ...chats,
+      {
+        type: "text",
+        msg: "joined the chat",
+        loc: "center",
+        action: "light text-success shadow",
+        name: "you",
+      },
+    ]);
+  };
+  
+  const joinMeeting = () => {
+    socket.emit("join-meeting", meetingCode);
+  };
+
   const join = (e) => {
     if (e.keyCode == 13) {
       socket.emit("join", e.target.value);
@@ -288,10 +310,6 @@ function App() {
       setEmo(false);
     } else if (myName !== "") {
       setEmo(true);
-
-      // let myel = document.querySelector("#emos");
-      // console.log(myel);
-      // myel.style = `position:fixed; top:${y}px; left:${x}px; overflow:auto;max-height:15rem;max-width:15rem;`;
     }
   };
   return (
@@ -437,6 +455,7 @@ function App() {
               setTxt(e.target.value);
             }}
             onKeyUp={join}
+            
             className="shadow py-1 px-2"
             style={{
               border: "none",
@@ -445,7 +464,15 @@ function App() {
               fontSize: "1.4rem",
             }}
             placeholder="enter your name to join"
-          />
+          /> 
+           <input
+      type="text"
+      value={meetingCode}
+      onChange={(e) => setMeetingCode(e.target.value)}
+      placeholder="Enter meeting code"
+    />
+    <button onClick={startMeeting}>Start Meeting</button>
+    <button onClick={joinMeeting}>Join Meeting</button>
         </div>
       ) : (
         <div
